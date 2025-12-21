@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenMeter – Carbon Footprint Calculator</title>
+        <meta property="og:title" content="GreenMeter — Carbon Footprint Calculator">
+        <meta property="og:description" content="Measure and reduce your monthly carbon footprint with GreenMeter.">
+        <meta property="og:image" content="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+</head>
+<body>
+    <header>
+        <nav class="top-nav">
+            <div class="logo">GreenMeter</div>
+            <ul>
+                <li><a href="#carbonForm">Calculator</a></li>
+                <li><a href="#resultSection">Results</a></li>
+                <li><a href="#insightSection">Insights</a></li>
+                <li><a href="#methodology">Methodology</a></li>
+                <li><button id="langBtn">🇮🇳 हिंदी</button></li>
+            </ul>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-text">
+                <p class="eyebrow">Track • Improve • Offset</p>
+                <h1 id="heroTitle">Measure your daily impact in a single glance.</h1>
+                <p id="heroDesc">GreenMeter helps you translate travel, diet, and home energy data into a clear emissions profile so you can focus on the biggest wins.</p>
+                <div class="hero-actions">
+                    <button type="button" id="heroCta" class="primary">Start calculating</button>
+                    <a href="#insightSection" class="secondary">See sustainability tips</a>
+                </div>
+            </div>
+            <div class="hero-card">
+                <p>Last updated: <span id="lastUpdated">–</span></p>
+                <h2>Live Footprint Estimate</h2>
+                <p class="hero-total"><span id="heroTotal">0.00</span> kg CO₂e / month</p>
+                <ul>
+                    <li><span id="heroLargestLabel">–</span> is your largest source</li>
+                    <li>See tailored reduction ideas below</li>
+                </ul>
+            </div>
+        </section>
+    </header>
+    
+    <main>
+        <div class="layout-grid">
+            <form id="carbonForm">
+                <h2 id="calcTitle">Calculate Your Carbon Footprint</h2>
+                    <div id="errorBox" role="alert" aria-live="polite"></div>
+                
+                <section>
+                    <h3 id="lblTravel">Travel</h3>
+                    <p id="hintTravel" class="hint">Capture long-distance trips or daily commute.</p>
+                    <label id="lblDist" for="travelDistance">Distance (km):</label>
+                    <input type="number" id="travelDistance" name="travelDistance" min="0" step="0.1" placeholder="e.g., 120">
+                    
+                    <label id="lblMode" for="travelMode">Mode of Transport:</label>
+                    <select id="travelMode" name="travelMode">
+                        <option value="">Select mode</option>
+                        <option value="car">Car</option>
+                        <option value="bus">Bus</option>
+                        <option value="train">Train</option>
+                        <option value="plane">Plane</option>
+                    </select>
+                </section>
+                
+                <section>
+                    <h3 id="lblVehicle">Vehicle</h3>
+                    <p id="hintVehicle" class="hint">Daily driving in personal vehicles.</p>
+                    <label id="lblVehicleType" for="vehicleType">Vehicle Type:</label>
+                    <select id="vehicleType" name="vehicleType">
+                        <option value="">Select vehicle</option>
+                        <option value="sedan">Sedan</option>
+                        <option value="suv">SUV</option>
+                        <option value="truck">Truck</option>
+                        <option value="motorcycle">Motorcycle</option>
+                    </select>
+                    
+                    <label id="lblVehicleDist" for="vehicleDistance">Distance Driven (km):</label>
+                    <input type="number" id="vehicleDistance" name="vehicleDistance" min="0" step="0.1" placeholder="e.g., 45">
+                </section>
+                
+                <section>
+                    <h3 id="lblDiet">Diet</h3>
+                    <p id="hintDiet" class="hint">Average monthly footprint from food choices.</p>
+                    <label id="lblDietType" for="dietType">Diet Type:</label>
+                    <select id="dietType" name="dietType">
+                        <option value="">Select diet</option>
+                        <option value="vegetarian">Vegetarian</option>
+                        <option value="vegan">Vegan</option>
+                        <option value="omnivore">Omnivore</option>
+                    </select>
+                </section>
+                
+                <section>
+                    <h3 id="lblElec">Electricity</h3>
+                    <p id="hintElec" class="hint">Use the monthly figure from your utility bill.</p>
+                    <label id="lblElecUsage" for="electricityUsage">Monthly Usage (kWh):</label>
+                    <input type="number" id="electricityUsage" name="electricityUsage" min="0" step="0.1" placeholder="e.g., 210">
+                </section>
+                
+                <!-- PERCEPTION SURVEY -->
+<section>
+                    <h3 id="lblPerception">Your Perception</h3>
+  <p class="hint">How high do you think your footprint is?</p>
+  <select id="perceived-footprint" required>
+    <option value="">Select</option>
+    <option value="1">Low</option>
+    <option value="2">Medium</option>
+    <option value="3">High</option>
+  </select>
+</section>
+
+<!-- CITY + AQI -->
+<section>
+    <h3 id="lblCity">City (for AQI)</h3>
+  <select id="user-city" required>
+    <option value="">Select city</option>
+    <option value="Delhi">Delhi</option>
+    <option value="Mumbai">Mumbai</option>
+    <option value="Pune">Pune</option>
+    <option value="Bengaluru">Bengaluru</option>
+    <option value="Hyderabad">Hyderabad</option>
+  </select>
+</section>
+
+<!-- INCOME GROUP -->
+<section>
+  <h3>Income Group (optional)</h3>
+  <select id="income-group">
+    <option value="">Skip</option>
+    <option value="low">₹0-25k/month</option>
+    <option value="medium">₹25-75k/month</option>
+    <option value="high">₹75k+/month</option>
+  </select>
+</section>
+
+                
+                <div class="form-actions">
+                    <button type="button" id="calculateBtn">Calculate Carbon Footprint</button>
+                    <button type="reset" class="ghost">Clear values</button>
+                </div>
+            </form>
+
+            <section id="resultSection">
+                <div class="section-header">
+                    <h2 id="resTitle">Your Carbon Footprint Results</h2>
+                    <p class="hint">We highlight top sources and visualize their share.</p>
+                </div>
+
+                <div class="summary-grid">
+                    <article class="summary-card" data-category="travel">
+                        <p>Travel</p>
+                        <h3 id="summaryTravel">0.00 kg</h3>
+                        <small>Long-distance trips</small>
+                    </article>
+                    <article class="summary-card" data-category="vehicle">
+                        <p>Vehicle</p>
+                        <h3 id="summaryVehicle">0.00 kg</h3>
+                        <small>Daily driving</small>
+                    </article>
+                    <article class="summary-card" data-category="diet">
+                        <p>Diet</p>
+                        <h3 id="summaryDiet">0.00 kg</h3>
+                        <small>Food choices</small>
+                    </article>
+                    <article class="summary-card" data-category="electricity">
+                        <p>Electricity</p>
+                        <h3 id="summaryElectricity">0.00 kg</h3>
+                        <small>Home energy</small>
+                    </article>
+                </div>
+
+                <div class="result-highlight">
+                    <p class="label">Total footprint</p>
+                    <h3 id="totalFootprintLabel">0.00 kg CO₂e / month</h3>
+                    <p class="largest"><span id="largestContributor">–</span> contributes the most to your footprint.</p>
+                </div>
+
+                <div id="results"></div>
+                <canvas id="pieChart" width="320" height="320" aria-label="Emission breakdown"></canvas>
+                <div style="text-align:center; margin-top:12px;">
+                    <button type="button" id="shareBtn" class="primary">Share Result</button>
+                </div>
+                
+                <!-- Local history: recent calculations -->
+                <div id="historySection" aria-live="polite">
+                    <div class="history-header">
+                        <h3>Recent Calculations</h3>
+                        <div class="history-actions">
+                            <button type="button" id="clearHistoryBtn" class="ghost">Clear history</button>
+                        </div>
+                    </div>
+                    <table id="historyTable">
+                        <thead>
+                            <tr><th>When</th><th>Total (kg CO₂e)</th></tr>
+                        </thead>
+                        <tbody>
+                            <!-- rows rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <section id="insightSection" class="insights">
+            <div class="section-header">
+                <h2>Personalized Insights</h2>
+                <p class="hint">We curate the top focus areas once you calculate.</p>
+            </div>
+            <div id="insightCards" class="insight-grid">
+                <article class="insight-card empty">
+                    <p>Run your first calculation to unlock insights.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="tips">
+            <div class="section-header">
+                <h2>Actionable Tips</h2>
+                <p class="hint">Simple experiments to try this month.</p>
+            </div>
+            <ul id="tipsList"></ul>
+        </section>
+
+        <section id="methodology" class="methodology">
+            <div class="section-header">
+                <h2>Methodology Snapshot</h2>
+                <p class="hint">Transparent factors power trustworthy numbers.</p>
+            </div>
+            <div class="methodology-grid">
+                <article>
+                    <h3>Transport</h3>
+                    <p>Mode-specific emission factors sourced from IPCC, UK BEIS, India GHG Program and Indian Railways (2015–2024). Values are applied per kilometre (kg CO₂ per km) for each transport mode to estimate monthly travel impacts from user-entered distances.</p>
+                </article>
+                <article>
+                    <h3>Diet</h3>
+                    <p>Diet emission factors follow Rodríguez‑Martín et al., Frontiers in Nutrition (2025). Factors are reported as kg CO₂e per person per day and are converted to a monthly estimate in-app by multiplying the daily factor by 30 (monthlyDietCO2 = dailyFactor × 30). These are population-average figures and should be interpreted as standardized estimates, not individual measurements.</p>
+                </article>
+                <article>
+                    <h3>Energy</h3>
+                    <p>Electricity intensity uses the India grid average of 0.727 kg CO₂ per kWh (Central Electricity Authority, CEA India, 2024). This national-average factor is applied to user-entered monthly kWh to produce a monthly electricity emissions estimate; regional or supplier-specific factors can be substituted if available.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+    <p>&copy; 2025 GreenMeter. All rights reserved.</p>
+    <p style="font-size: 0.8em; color: #7a9a7a; margin-top: 10px;">
+        Note: This tool collects anonymous data (emissions & random ID) for student research purposes. 
+        No personal identifiable information is stored.
+    </p>
+</footer>
+</body>
+</html>
