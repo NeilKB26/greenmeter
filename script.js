@@ -702,9 +702,11 @@ function sendToGoogleSheets(data) {
  */
 function getUserId() {
     let userId = localStorage.getItem('greenmeter_uid');
-    if (!userId) {
-        // Generate a random unique ID (e.g., "user_173415923_892")
-        userId = 'user_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+    
+    // Logic: If no ID exists OR if it was a faulty test ID, generate a new one
+    if (!userId || userId === "undefined" || userId.length < 10) {
+        // Industry-standard unique ID generation
+        userId = 'gm-' + crypto.randomUUID(); 
         localStorage.setItem('greenmeter_uid', userId);
     }
     return userId;
